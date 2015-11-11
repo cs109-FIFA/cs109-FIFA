@@ -1,0 +1,67 @@
+Title
+	Assessing Player Value through inference of Player Impact
+
+Team Name
+    Future Impact Football Analytics (FIFA)
+
+Team Member 1's Github username
+	twkillian
+	
+Team Member 2's Github username
+	abhishekmalali
+	
+Team Member 3's Github username 
+	virgodi
+
+Background and Motivation
+	
+	The three of us are large football fans. We consume the game in many aspects of our lives. Our hearts are lifted when our respective teams do well and are similarly frustrated when they fail to perform to our expectations. When teams consistently underperform they look to infuse their team with more talented players, typically drawn from lower-tier or financially poor teams. The financial incentive for both teams in any transaction is clear, the buying team has hope that the new addition will put them over the top talent-wise to improve their standing in their league competition while the selling team may look at the new funds as a way to prepare for the future and secure several new players to improve their team in the future.
+	
+	In the past few years the economy of player transfers has undergone significant inflation where the top-tier clubs have shown a willingness to overpay for marginal talent or for players that may not be a good fit in their team. There is some notion that the environment is broken and is in need of revitalization. There are multiple ways to address the psychology of club executives and try to identify their motivations for spending money to procure new talent for their team. We refrain from any investigation into club finances but want to determine a method by which we can accurately and objectively valuate any player based on the impact that they have on the matches they play in.
+
+
+Project Objectives
+
+	Our primary motivation is to quantify the impact (based on goals scored, assists made and consistency of play) an individual player has on the games which he plays for his team. We intend to use this quantity for each player to infer their value (agnostic of team at first and later based on current team and potential buyers). We hope to learn more about what goes into modeling player value, beyond subjective measures of team they currently play for and the league they currently play in, and how we can compare like players with each other. Our hope is that this work will provide the foundation to build an analysis portfolio to enable application to sports analytics positions or a long-term hobby at the very least.
+
+What Data?
+
+	We are in the process of scraping historical match data from the top 5 european leagues from [WEBSITE HERE] which is publicly available.
+
+Must-have features
+
+	Our must-have feature is the single metric “Player Impact” derived from the goals, assists and other temporal factors for each player.
+	Along with this feature, we are deeply interested in being able to compare players, either with themselves from season to season or with competitors, in order to derive accurate valuation from player to player.
+
+Optional Features
+
+	We would enjoy the ability to forecast a game’s outcome using each team’s average impact score based on the combination of players that a team would likely field.	
+
+Design Overview
+	
+	We have scraped large amounts of data using beautiful soup.
+	We will either manage this information through native Pandas dataframes or Spark depending on what volume of data and the flexibility (read immutability) that our calculations require.
+	After we’ve derived player impact metrics we intend to cluster players using k-means or mean shift clustering.
+
+Verification
+
+	There is a clear hierarchy that exists in sports. Better teams tend to have better players, we would expect the top performing players from any league to come from the best teams in those leagues. That being said, this project has the intent to describe the population more than predict any set outcome. At least, at this stage of the project (and with the timeline we are given).
+
+Visualization and Presentation
+
+	The most effective visualization that we can show is the clustering of players with representative player labels. We can organize these clusters by league, team or globally. It will be interesting to see the migration of clusters as you interrogate separate populations of players. Since our data is historical, we have the context of player performance that we can use to editorialize the clustering we observe. This will greatly aid our audience in understanding our results and their implications.	
+
+Schedule/timeline
+
+	By the end of the week of 13th November, we will have our data scraped from the website for the 2012/13 and 2013/14 seasons for the top 5 european leagues.
+	By the end of the week of 20th November, we will have the data cleaned and metrics formulated and run for each player.
+	By the end of the week of the 27th of November we will have completed the clustering of like players and will have begun formal efforts to build our website.
+	With the remaining time in the project, we will spend refining our results and preparing our presentation/video/website.
+
+Team Member Contributions
+
+	Virgile has headed up the data scraping operation and has orchestrated our team’s efforts. He will also contribute to the metric formulation.
+	Taylor is taking the responsibility to coordinate team efforts and head up data cleaning. He is working with Virgile and Abhi to formulate the metric. 
+	Abhi is taking the responsibility to develop accurate comparative tools, using clustering methods.
+
+	The three of us together will contribute equally to the video and website.
