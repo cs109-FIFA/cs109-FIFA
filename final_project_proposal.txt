@@ -15,7 +15,7 @@ Team Member 3's Github username
 
 Background and Motivation
 	
-	The three of us are large football fans. We consume the game in many aspects of our lives. Our hearts are lifted when our respective teams do well and are similarly frustrated when they fail to perform to our expectations. When teams consistently underperform they look to infuse their team with more talented players, typically drawn from lower-tier or financially poor teams. The financial incentive for both teams in any transaction is clear, the buying team has hope that the new addition will put them over the top talent-wise to improve their standing in their league competition while the selling team may look at the new funds as a way to prepare for the future and secure several new players to improve their team in the future.
+	The three of us are large football (and by football, we of course mean the one and only, the one played with feet) fans. We consume the game in many aspects of our lives. Our hearts are lifted when our respective teams do well and are similarly frustrated when they fail to perform to our expectations. When teams consistently underperform they look to infuse their team with more talented players, typically drawn from lower-tier or financially poor teams. The financial incentive for both teams in any transaction is clear, the buying team has hope that the new addition will put them over the top talent-wise to improve their standing in their league competition while the selling team may look at the new funds as a way to prepare for the future and secure several new players to improve their team in the future.
 	
 	In the past few years the economy of player transfers has undergone significant inflation where the top-tier clubs have shown a willingness to overpay for marginal talent or for players that may not be a good fit in their team. There is some notion that the environment is broken and is in need of revitalization. There are multiple ways to address the psychology of club executives and try to identify their motivations for spending money to procure new talent for their team. We refrain from any investigation into club finances but want to determine a method by which we can accurately and objectively valuate any player based on the impact that they have on the matches they play in.
 
@@ -26,7 +26,7 @@ Project Objectives
 
 What Data?
 
-	We are in the process of scraping historical match data from the top 5 european leagues from [WEBSITE HERE] which is publicly available.
+	We are in the process of scraping historical match data from the top 5 european leagues from http://www.worldfootball.net/report/premier-league-2012-2013-fulham-fc-reading-fc/ which is publicly available.
 
 Must-have features
 
@@ -45,11 +45,11 @@ Design Overview
 
 Verification
 
-	There is a clear hierarchy that exists in sports. Better teams tend to have better players, we would expect the top performing players from any league to come from the best teams in those leagues. That being said, this project has the intent to describe the population more than predict any set outcome. At least, at this stage of the project (and with the timeline we are given).
+	There is a clear hierarchy that exists in sports. Better teams tend to have better players, we would expect the top performing players from any league to come from the best teams in those leagues. That being said, this project has the intent to describe the population more than predict any set outcome. At least, at this stage of the project (and with the timeline we are given). In last resort, we could compare our new metric to existing data bases such as Football Manager’s Data base, a video game renowned for being the most accurate when it comes to player evaluation (used by many professional clubs to 
 
 Visualization and Presentation
 
-	The most effective visualization that we can show is the clustering of players with representative player labels. We can organize these clusters by league, team or globally. It will be interesting to see the migration of clusters as you interrogate separate populations of players. Since our data is historical, we have the context of player performance that we can use to editorialize the clustering we observe. This will greatly aid our audience in understanding our results and their implications.	
+	The most effective visualization that we can show is the clustering of players with representative player labels. We can organize these clusters by league, team or globally. It will be interesting to see the migration of clusters as you interrogate separate populations of players. Since our data is historical, we have the context of player performance that we can use to editorialize the clustering we observe. This will greatly aid our audience in understanding our results and their implications.	It will also be interesting to translate with the help of visualization tools the evolution of the impact of key players at different stage of the season. 
 
 Schedule/timeline
 
