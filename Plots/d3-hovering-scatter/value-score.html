@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Using color in SVG</title>
+      <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+		<style type="text/css">
+            circle:hover {
+                fill: orange;
+            }
+			.axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+            .d3-tip {
+                line-height: 1;
+                font-weight: bold;
+                padding: 3px;
+                background: rgba(0, 0, 0, 0.8);
+                color: #fff;
+                border-radius: 2px;
+                font-family:sans-serif;
+                font-size:5px;}
+            .d3-tip:after {
+                box-sizing: border-box;
+                display: inline;
+                font-size: 10px;
+                width: 100%;
+                line-height: 1;
+                color: rgba(0, 0, 0, 0.8);
+                content: "\25BC";
+                position: absolute;
+                text-align: center;
+            }
+
+
+            .d3-tip.n:after {
+                margin: -1px 0 0 0;
+                top: 100%;
+                left: 0;
+                }
+}
+		</style>
+	</head>
+	<body>
+        <div id="option">
+        <input name="goalButton" 
+           type="button" 
+           value="View Goals" 
+           onclick="viewData()" />
+        </div>
+    
+		<script type="text/javascript"></script>
+	    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <script>
+        var w = 500;
+		var h = 300;
+        //Introducing padding
+        var padding = 35;
+        var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+        var dataset;
+        d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console
+                console.log(dataset);
+                createScatter();
+                });
+        function createScatter(){
+			//Scaling the x-axis
+            var xScale = d3.scale.linear()
+					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
+					.range([padding, w-padding]);
+            var yScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return +d.season_value; })])
+                    .range([h-padding, padding]);
+            var rScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return d.ngoals+ d.nassists; })])
+                    .range([2, 5]);
+
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                        return "<h1><strong>Name : </strong><span style='color:red'>"+ d.names+"</span></h1>"
+                        +"<h1><strong>Goals : </strong><span style='color:red'>"+ d.ngoals+"</span></h1>"
+                        +"<h1><strong>Assists : </strong><span style='color:red'>"+ d.nassists+"</span></h1>";
+                })
+            //Creating tip
+            svg.call(tip);
+            //Scatter plot with SVG
+            var circles = svg.selectAll("circle")
+			    .data(dataset)
+			    .enter()
+			    .append("circle")
+                .on("click",function(d){console.log(d)})
+                .on("mouseover",tip.show)
+                .on("mouseout",tip.hide)
+                .attr("fill","#0216AD");
+
+                circles.attr({cx:function(d)
+                        {return xScale(d.value);},
+                        cy:function(d){return yScale(d.season_value);},
+                        r:function(d){return rScale(d.nassists+d.ngoals);}});
+            
+            //Setting up axes 
+            var xAxis = d3.svg.axis();
+            xAxis.scale(xScale);
+            xAxis.orient("bottom").ticks(5); 
+            svg.append("g").attr("class","axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis);
+
+            var yAxis = d3.svg.axis();
+            yAxis.scale(yScale);
+            yAxis.orient("left").ticks(5);
+            svg.append("g").attr("class","axis")
+            .attr("transform","translate("+padding+",0)")
+            .call(yAxis);
+
+            svg.append("text")
+                .attr("x", 250)
+                .attr("y", 295)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12)
+                .style("text-anchor", "middle")
+                .text("Value(in Pounds)");
+
+            svg.append("text")
+                .attr("transform","rotate(-90)")
+                .attr("y", 10)
+                .attr("x", -h/2-20)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12) 
+                .text("Season Score");
+       }
+    
+        </script>
+	</body>
+</html>
+
