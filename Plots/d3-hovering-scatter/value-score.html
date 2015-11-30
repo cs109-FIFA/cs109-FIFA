@@ -45,35 +45,88 @@
                 top: 100%;
                 left: 0;
                 }
-}
+            #wrapper {
+                width: 600px;
+                border: 1px solid black;
+                overflow: hidden; /* add this to contain floated children */
+                }
+            #first {
+                display: inline-block;
+                }
+
+            #second {
+                display: inline-block;
+                }
+            #third {
+                display: inline-block;
+                }
+            #fourth {
+                display: inline-block;
+                }
+            #fifth {
+                display: inline-block;
+                }
 		</style>
 	</head>
 	<body>
-        <div id="option">
+    <div id="wrapper">
+        <div id="first">
+        <input name="goalButton" 
+           type="button" 
+           value="View Season Value" 
+           onclick="viewSeasonValue()" />
+        </div>
+        <div id="second">
         <input name="goalButton" 
            type="button" 
            value="View Goals" 
-           onclick="viewData()" />
+           onclick="viewGoals()" />
         </div>
-    
+        <div id="third">
+        <input name="goalButton" 
+           type="button" 
+           value="View Assists" 
+           onclick="viewAssists()" />
+        </div>
+        <div id="fourth">
+        <input name="goalButton" 
+           type="button" 
+           value="View Equalizing Goals" 
+           onclick="viewTieGoals()" />
+        </div>
+        <div id="fifth">
+        <input name="goalButton" 
+           type="button" 
+           value="View Equalizing Assists" 
+           onclick="viewTieAssists()" />
+        </div>
+   </div>
+
+</div>
+            
 		<script type="text/javascript"></script>
 	    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script>
-        var w = 500;
-		var h = 300;
+        var w = 600;
+		var h = 400;
         //Introducing padding
         var padding = 35;
-        var svg = d3.select("body")
+        
+        var dataset;
+        viewSeasonValue();
+        function viewSeasonValue(){
+            d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console
+                createScatter();
+                });
+        }
+        function createScatter(){
+            d3.select("svg").remove();
+
+            var svg = d3.select("body")
 						.append("svg")
 						.attr("width", w)
 						.attr("height", h);
-        var dataset;
-        d3.csv("English_test_data.csv", function(csv) {
-                dataset = csv;  //Log output to console
-                console.log(dataset);
-                createScatter();
-                });
-        function createScatter(){
 			//Scaling the x-axis
             var xScale = d3.scale.linear()
 					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
@@ -127,8 +180,8 @@
             .call(yAxis);
 
             svg.append("text")
-                .attr("x", 250)
-                .attr("y", 295)
+                .attr("x", w/2)
+                .attr("y", h-5)
                 .attr("font-family","sans-serif")
                 .attr("font-size",12)
                 .style("text-anchor", "middle")
@@ -142,7 +195,339 @@
                 .attr("font-size",12) 
                 .text("Season Score");
        }
-    
+
+            function viewGoals(){
+                d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console
+                createScatterGoals();
+                });
+
+       }
+            function createScatterGoals(){
+            
+            d3.select("svg").remove();
+            var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+                
+			//Scaling the x-axis
+            var xScale = d3.scale.linear()
+					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
+					.range([padding, w-padding]);
+            var yScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return +d.ngoals; })])
+                    .range([h-padding, padding]);
+            var rScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return d.ngoals+ d.nassists; })])
+                    .range([2, 5]);
+
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                        return "<h1><strong>Name : </strong><span style='color:red'>"+ d.names+"</span></h1>"
+                        +"<h1><strong>Goals : </strong><span style='color:red'>"+ d.ngoals+"</span></h1>"
+                        +"<h1><strong>Assists : </strong><span style='color:red'>"+ d.nassists+"</span></h1>";
+                })
+            //Creating tip
+            svg.call(tip);
+            //Scatter plot with SVG
+            var circles = svg.selectAll("circle")
+			    .data(dataset)
+			    .enter()
+			    .append("circle")
+                .on("click",function(d){console.log(d)})
+                .on("mouseover",tip.show)
+                .on("mouseout",tip.hide)
+                .attr("fill","#0216AD");
+
+                circles.attr({cx:function(d)
+                        {return xScale(d.value);},
+                        cy:function(d){return yScale(d.ngoals);},
+                        r:function(d){return rScale(d.nassists+d.ngoals);}});
+            
+            //Setting up axes 
+            var xAxis = d3.svg.axis();
+            xAxis.scale(xScale);
+            xAxis.orient("bottom").ticks(5); 
+            svg.append("g").attr("class","axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis);
+
+            var yAxis = d3.svg.axis();
+            yAxis.scale(yScale);
+            yAxis.orient("left").ticks(5);
+            svg.append("g").attr("class","axis")
+            .attr("transform","translate("+padding+",0)")
+            .call(yAxis);
+
+            svg.append("text")
+                .attr("x", w/2)
+                .attr("y", h-5)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12)
+                .style("text-anchor", "middle")
+                .text("Value(in Pounds)");
+
+            svg.append("text")
+                .attr("transform","rotate(-90)")
+                .attr("y", 10)
+                .attr("x", -h/2-20)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12) 
+                .text("Goals");
+       }
+            function viewAssists(){
+                d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console   
+                createScatterAssists();
+                });
+
+       }
+            function createScatterAssists(){
+            
+            d3.select("svg").remove();
+            var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+                
+			//Scaling the x-axis
+            var xScale = d3.scale.linear()
+					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
+					.range([padding, w-padding]);
+            var yScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return +d.nassists; })])
+                    .range([h-padding, padding]);
+            var rScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return d.ngoals+ d.nassists; })])
+                    .range([2, 5]);
+
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                        return "<h1><strong>Name : </strong><span style='color:red'>"+ d.names+"</span></h1>"
+                        +"<h1><strong>Goals : </strong><span style='color:red'>"+ d.ngoals+"</span></h1>"
+                        +"<h1><strong>Assists : </strong><span style='color:red'>"+ d.nassists+"</span></h1>";
+                })
+            //Creating tip
+            svg.call(tip);
+            //Scatter plot with SVG
+            var circles = svg.selectAll("circle")
+			    .data(dataset)
+			    .enter()
+			    .append("circle")
+                .on("click",function(d){console.log(d)})
+                .on("mouseover",tip.show)
+                .on("mouseout",tip.hide)
+                .attr("fill","#0216AD");
+
+                circles.attr({cx:function(d)
+                        {return xScale(d.value);},
+                        cy:function(d){return yScale(d.nassists);},
+                        r:function(d){return rScale(d.nassists+d.ngoals);}});
+            
+            //Setting up axes 
+            var xAxis = d3.svg.axis();
+            xAxis.scale(xScale);
+            xAxis.orient("bottom").ticks(5); 
+            svg.append("g").attr("class","axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis);
+
+            var yAxis = d3.svg.axis();
+            yAxis.scale(yScale);
+            yAxis.orient("left").ticks(5);
+            svg.append("g").attr("class","axis")
+            .attr("transform","translate("+padding+",0)")
+            .call(yAxis);
+
+            svg.append("text")
+                .attr("x", w/2)
+                .attr("y", h-5)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12)
+                .style("text-anchor", "middle")
+                .text("Value(in Pounds)");
+
+            svg.append("text")
+                .attr("transform","rotate(-90)")
+                .attr("y", 10)
+                .attr("x", -h/2-20)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12) 
+                .text("Assists");
+       }
+            function viewTieGoals(){
+                d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console
+                createScatterTieGoals();
+                });
+
+       }
+            function createScatterTieGoals(){
+            
+            d3.select("svg").remove();
+            var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+                
+			//Scaling the x-axis
+            var xScale = d3.scale.linear()
+					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
+					.range([padding, w-padding]);
+            var yScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return +d.nequalizer_goals; })])
+                    .range([h-padding, padding]);
+            var rScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return d.ngoals+ d.nassists; })])
+                    .range([2, 5]);
+
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                        return "<h1><strong>Name : </strong><span style='color:red'>"+ d.names+"</span></h1>"
+                        +"<h1><strong>Goals : </strong><span style='color:red'>"+ d.ngoals+"</span></h1>"
+                        +"<h1><strong>Assists : </strong><span style='color:red'>"+ d.nassists+"</span></h1>";
+                })
+            //Creating tip
+            svg.call(tip);
+            //Scatter plot with SVG
+            var circles = svg.selectAll("circle")
+			    .data(dataset)
+			    .enter()
+			    .append("circle")
+                .on("click",function(d){console.log(d)})
+                .on("mouseover",tip.show)
+                .on("mouseout",tip.hide)
+                .attr("fill","#0216AD");
+
+                circles.attr({cx:function(d)
+                        {return xScale(d.value);},
+                        cy:function(d){return yScale(d.nequalizer_goals);},
+                        r:function(d){return rScale(d.nassists+d.ngoals);}});
+            
+            //Setting up axes 
+            var xAxis = d3.svg.axis();
+            xAxis.scale(xScale);
+            xAxis.orient("bottom").ticks(5); 
+            svg.append("g").attr("class","axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis);
+
+            var yAxis = d3.svg.axis();
+            yAxis.scale(yScale);
+            yAxis.orient("left").ticks(5);
+            svg.append("g").attr("class","axis")
+            .attr("transform","translate("+padding+",0)")
+            .call(yAxis);
+
+            svg.append("text")
+                .attr("x", w/2)
+                .attr("y", h-5)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12)
+                .style("text-anchor", "middle")
+                .text("Value(in Pounds)");
+
+            svg.append("text")
+                .attr("transform","rotate(-90)")
+                .attr("y", 10)
+                .attr("x", -h/2-20)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12) 
+                .text("Equalizing Goals");
+       }
+            function viewTieAssists(){
+                d3.csv("English_test_data.csv", function(csv) {
+                dataset = csv;  //Log output to console
+                createScatterTieAssists();
+                });
+
+       }
+            function createScatterTieAssists(){
+            
+            d3.select("svg").remove();
+            var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+                
+			//Scaling the x-axis
+            var xScale = d3.scale.linear()
+					.domain([0, d3.max(dataset, function(d) { return +d.value; })])
+					.range([padding, w-padding]);
+            var yScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return +d.nequalizer_assists; })])
+                    .range([h-padding, padding]);
+            var rScale = d3.scale.linear()
+                    .domain([0, d3.max(dataset, function(d) { return d.ngoals+ d.nassists; })])
+                    .range([2, 5]);
+
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                        return "<h1><strong>Name : </strong><span style='color:red'>"+ d.names+"</span></h1>"
+                        +"<h1><strong>Goals : </strong><span style='color:red'>"+ d.ngoals+"</span></h1>"
+                        +"<h1><strong>Assists : </strong><span style='color:red'>"+ d.nassists+"</span></h1>";
+                })
+            //Creating tip
+            svg.call(tip);
+            //Scatter plot with SVG
+            var circles = svg.selectAll("circle")
+			    .data(dataset)
+			    .enter()
+			    .append("circle")
+                .on("click",function(d){console.log(d)})
+                .on("mouseover",tip.show)
+                .on("mouseout",tip.hide)
+                .attr("fill","#0216AD");
+
+                circles.attr({cx:function(d)
+                        {return xScale(d.value);},
+                        cy:function(d){return yScale(d.nequalizer_assists);},
+                        r:function(d){return rScale(d.nassists+d.ngoals);}});
+            
+            //Setting up axes 
+            var xAxis = d3.svg.axis();
+            xAxis.scale(xScale);
+            xAxis.orient("bottom").ticks(5); 
+            svg.append("g").attr("class","axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis);
+
+            var yAxis = d3.svg.axis();
+            yAxis.scale(yScale);
+            yAxis.orient("left").ticks(5);
+            svg.append("g").attr("class","axis")
+            .attr("transform","translate("+padding+",0)")
+            .call(yAxis);
+
+            svg.append("text")
+                .attr("x", w/2)
+                .attr("y", h-5)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12)
+                .style("text-anchor", "middle")
+                .text("Value(in Pounds)");
+
+            svg.append("text")
+                .attr("transform","rotate(-90)")
+                .attr("y", 10)
+                .attr("x", -h/2-20)
+                .attr("font-family","sans-serif")
+                .attr("font-size",12) 
+                .text("Equalizing Assists");
+       }
         </script>
 	</body>
 </html>
